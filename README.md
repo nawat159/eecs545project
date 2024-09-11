@@ -23,14 +23,15 @@ The dataset consists of 54,706 mammogram images collected from 11,913 patients, 
 <img src="Figures/image_preprocess.png" width="600">
 
 3. Model Architecture:
-- Baseline Models: Initial models included pre-trained CNN (ResNeXt) and ViT architectures, which were fine-tuned for this specific medical imaging task.
-- Advanced Techniques: The project incorporated ROI cropping to focus on relevant image areas, data augmentation to increase the robustness of the model, and auxiliary predictions to improve classification by considering additional features like patient age, breast density, and biopsy results.
+- Baseline Models: Initial models included pre-trained CNN (ResNeXt) and Visual Transformer (DeiT3) architectures, which were fine-tuned for this specific medical imaging task.
+- Weighted Loss: We used the weighted loss function to tackle the imbalanced data problem by giving more weight to the loss of cancer images. 
+-Threshold: We used the sigmoid function to improve the model performance by discriminating between malignant and benign images in evaluation and testing.
+-Auxiliary Prediction: The model was enhanced by incorporating auxiliary loss predictions, where additional output branches were added to predict 11 features related to the primary task of classifying mammogram images. This approach helped optimize the model by combining these auxiliary predictions with the main loss function, which improved overall performance by reducing the risk of gradient vanishing and preventing overfitting.
 
-Weighted Loss: We used the weighted loss function to tackle the imbalanced data problem by giving more weight to the loss of cancer images. 
-
-Threshold: We used the sigmoid function to improve the model performance by discriminating between malignant and benign images in evaluation and testing.
-
-Auxiliary Prediction: The model was enhanced by incorporating auxiliary loss predictions, where additional output branches were added to predict 11 features related to the primary task of classifying mammogram images. This approach helped optimize the model by combining these auxiliary predictions with the main loss function, which improved overall performance by reducing the risk of gradient vanishing and preventing overfitting.
+4. Experiment Settings and Evaluation Metrics:
+- Used 5-fold cross-validation for model evaluation with the training dataset.
+- Original high-resolution images in DICOM format were converted to PNG for easier processing.
+- Images were resized to reduce training and testing overhead.
 
 3. Training and Evaluation:
 - A 5-fold cross-validation approach was used to train and evaluate the models.
@@ -40,19 +41,15 @@ Results:
 
 | Setting                 | Model         | Evaluation F1 | Test F1 | Recall | Precision | Accuracy |
 |-------------------------|---------------|---------------|---------|--------|-----------|----------|
-| Resized Original         | CNN(ResNeXt)  | 0.047         | 0.027   | 0.022  | 0.035     | 0.966    |
-|                         | ViT(deit3)    | 0.037         | 0.0     | 0.0    | 0.0       | 0.979    |
+| Resized Original        | CNN(ResNeXt)  | 0.047         | 0.027   | 0.022  | 0.035     | 0.966    |
+|                         | ViT(DeiT3)    | 0.037         | 0.0     | 0.0    | 0.0       | 0.979    |
 | + ROI Crop              | CNN           | 0.057         | 0.108   | 0.359  | 0.063     | 0.874    |
 | + Threshold             | CNN           | 0.122         | 0.076   | 0.351  | 0.043     | 0.820    |
 | + Augmentation          | CNN           | 0.161         | 0.044   | 0.043  | 0.043     | 0.959    |
 | + Auxiliary Prediction  | CNN(ResNeXt)  | 0.345         | 0.314   | 0.290  | 0.342     | 0.973    |
 |                         | ViT(deit3)    | 0.130         | 0.063   | 0.126  | 0.042     | 0.921    |
 
-
-
-
-The best-performing model was a CNN (ResNeXt) with all preprocessing steps (ROI cropping, augmentation, auxiliary predictions). This model achieved an F1 score of 0.345, significantly outperforming the baseline models.
-Despite the improvements, challenges remained due to the substantial data imbalance, highlighting areas for future research and development.
+The best-performing model was a CNN (ResNeXt) with all preprocessing steps (ROI cropping, augmentation, auxiliary predictions). This model achieved an F1 score of 0.345, significantly outperforming the baseline models. Despite the improvements, challenges remained due to the substantial data imbalance, highlighting areas for future research and development.
 
 Conclusion:
 
